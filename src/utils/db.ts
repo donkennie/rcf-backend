@@ -115,6 +115,7 @@ export const AppDataSource = new DataSource({
     username: db_config.username,
     password: db_config.password,
     database: db_config.dbname,
+    entities: [Users, Business, Campaign],
     synchronize: true,
     logging: true,
     migrations: ["./src/migrations/*.ts"],

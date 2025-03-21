@@ -34,6 +34,12 @@ const validResetPassword = [
         .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), body('role_ids'),
 ];
 
+const validOTP = [
+    body('otp').notEmpty().withMessage('It should be required'),
+    body('user_id').trim().notEmpty().withMessage('It should be required'),
+    
+]
+
 export class UserRoutes {
     private baseEndPoint = '/api/users';
 
@@ -47,8 +53,8 @@ export class UserRoutes {
         app.route('/api/register')
             .post(validate(validUserInput), controller.addHandler);
 
-        app.route('/api/verify')
-            .post(validate(validUserInput), controller.verifyOtp);
+        app.route(this.baseEndPoint + '/verify')
+            .post(validate(validOTP), controller.verifyOtp);
 
         app.route(this.baseEndPoint + '/:id')
             .all(authorize) // Apply authorization middleware to all routes under this endpoint
