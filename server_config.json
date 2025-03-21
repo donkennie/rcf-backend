@@ -1,10 +1,10 @@
 {
     "port": 3000,
     "db_config": {
-        "db": "postgres",
-        "username": "postgres",
-        "password": "donkennie",
-        "host": "localhost",
+        "db": "rcf_db",
+        "username": "rcf_db_user",
+        "password": "Xxsm73TQ3CsEIS0ezVC7m3Cm7u0aobXZ",
+        "host": "dpg-cvedchjv2p9s73dlmn0g-a",
         "port": 5432,
         "dbname": "rcf-backend"
     },
