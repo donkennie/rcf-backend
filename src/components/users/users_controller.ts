@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import { BaseController } from '../../utils/base_controller';
-import { SERVER_CONST, bcryptCompare, encryptString } from '../../utils/common';
+import { SERVER_CONST, bcryptCompare, encryptString, generateOTP } from '../../utils/common';
 // import { RolesUtil } from '../roles/roles_controller';
 import { UsersService } from './users_service';
 import * as jwt from 'jsonwebtoken';
@@ -45,6 +45,8 @@ export class UserController extends BaseController {
 
             // Encrypt the user's password
             user.password = await encryptString(user.password);
+            user.otp = generateOTP();
+            user.account_verify = false;
 
             // If role_ids are valid, create the user
             const createdUser = await service.create(user);
@@ -139,6 +141,26 @@ export class UserController extends BaseController {
         return;
     }
 
+    public async verifyOtp(req: Request, res: Response): Promise<void> {
+        const { userId, otp } = req.body;
+
+        const service = new UsersService();
+
+        const user = await service.findOne(req.params.id);
+        if(user != null && user.data.otp == otp){
+            user.data.account_verify = true;
+            user.data.updated_at = new Date();
+
+           await service.update(userId, user.data);
+
+           res.status(200).json({ statusCode: 200, status: 'success', data: "Account verified🎉!" });
+            return;
+        }
+
+        res.status(400).json({ statusCode: 400, status: 'error', data: "invalid OTP!" });
+        return;
+    }
+
 
     /**
      * Handles user login by checking credentials, generating tokens, and responding with tokens.
@@ -159,6 +181,11 @@ export class UserController extends BaseController {
         } else {
             const user = result.data[0];
 
+            if(user.account_verify === false){
+                res.status(404).json({ statusCode: 404, status: 'error', message: 'Account not verify!😒' });
+                return;
+            }
+
             // Compare provided password with stored hashed password
             const comparePasswords = await bcryptCompare(password, user.password);
             if (!comparePasswords) {
@@ -178,7 +205,7 @@ export class UserController extends BaseController {
             }, SERVER_CONST.JWTSECRET, { expiresIn: SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
 
             // Respond with tokens
-            res.status(200).json({ statusCode: 200, status: 'success', data: { accessToken, refreshToken } });
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken } });
             return;
         }
     }

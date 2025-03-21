@@ -12,6 +12,18 @@ export const encryptString = async (s: string) => {
     return encryptedString;
 };
 
+export const generateOTP = function(){
+    const numbers = "0123456789";
+    const random = Math.random;
+    let strRandom = "";
+    
+    for (let i = 0; i < 5; i++) {
+        const temp = Math.floor(random() * numbers.length);
+        strRandom += numbers[temp];
+    }
+    
+    return strRandom.slice(0, 6);
+}
 
 /**
  * Compares a plain string with a bcrypt hash to determine if they match.

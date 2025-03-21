@@ -40,6 +40,8 @@ class UserRoutes {
             .get(controller.getAllHandler);
         app.route('/api/register')
             .post((0, validator_1.validate)(validUserInput), controller.addHandler);
+        app.route('/api/verify')
+            .post((0, validator_1.validate)(validUserInput), controller.verifyOtp);
         app.route(this.baseEndPoint + '/:id')
             .all(auth_util_1.authorize)
             .get(controller.getAllHandler)

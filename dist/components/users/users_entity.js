@@ -23,6 +23,8 @@ let Users = class Users {
     username;
     email;
     password;
+    otp;
+    account_verify;
     memberRole;
     created_at;
     updated_at;
@@ -52,6 +54,14 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Users.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ length: 5 }),
+    __metadata("design:type", Number)
+], Users.prototype, "otp", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Users.prototype, "account_verify", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'enum',

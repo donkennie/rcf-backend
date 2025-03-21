@@ -49,6 +49,8 @@ class UserController extends base_controller_1.BaseController {
             user.email = user.email?.toLowerCase();
             user.username = user.username?.toLowerCase();
             user.password = await (0, common_1.encryptString)(user.password);
+            user.otp = (0, common_1.generateOTP)();
+            user.account_verify = false;
             const createdUser = await service.create(user);
             res.status(createdUser.statusCode).json(createdUser);
         }
@@ -103,6 +105,20 @@ class UserController extends base_controller_1.BaseController {
         res.status(result.statusCode).json(result);
         return;
     }
+    async verifyOtp(req, res) {
+        const { userId, otp } = req.body;
+        const service = new users_service_1.UsersService();
+        const user = await service.findOne(req.params.id);
+        if (user != null && user.data.otp == otp) {
+            user.data.account_verify = true;
+            user.data.updated_at = new Date();
+            await service.update(userId, user.data);
+            res.status(200).json({ statusCode: 200, status: 'success', data: "Account verified🎉!" });
+            return;
+        }
+        res.status(400).json({ statusCode: 400, status: 'error', data: "invalid OTP!" });
+        return;
+    }
     async login(req, res) {
         const { email, password } = req.body;
         const service = new users_service_1.UsersService();
@@ -113,6 +129,10 @@ class UserController extends base_controller_1.BaseController {
         }
         else {
             const user = result.data[0];
+            if (user.account_verify === false) {
+                res.status(404).json({ statusCode: 404, status: 'error', message: 'Account not verify!😒' });
+                return;
+            }
             const comparePasswords = await (0, common_1.bcryptCompare)(password, user.password);
             if (!comparePasswords) {
                 res.status(400).json({ statusCode: 400, status: 'error', message: 'Password is not valid' });
@@ -126,7 +146,7 @@ class UserController extends base_controller_1.BaseController {
                 email: user.email,
                 username: user.username,
             }, common_1.SERVER_CONST.JWTSECRET, { expiresIn: common_1.SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
-            res.status(200).json({ statusCode: 200, status: 'success', data: { accessToken, refreshToken } });
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken } });
             return;
         }
     }

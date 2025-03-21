@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkValidDate = exports.SERVER_CONST = exports.bcryptCompare = exports.encryptString = void 0;
+exports.checkValidDate = exports.SERVER_CONST = exports.bcryptCompare = exports.generateOTP = exports.encryptString = void 0;
 const bcrypt = __importStar(require("bcrypt"));
 const moment_1 = __importDefault(require("moment"));
 const encryptString = async (s) => {
@@ -44,6 +44,17 @@ const encryptString = async (s) => {
     return encryptedString;
 };
 exports.encryptString = encryptString;
+const generateOTP = function () {
+    const numbers = "0123456789";
+    const random = Math.random;
+    let strRandom = "";
+    for (let i = 0; i < 5; i++) {
+        const temp = Math.floor(random() * numbers.length);
+        strRandom += numbers[temp];
+    }
+    return strRandom.slice(0, 6);
+};
+exports.generateOTP = generateOTP;
 const bcryptCompare = async (s, hash) => {
     return await bcrypt.compare(s, hash);
 };

@@ -17,6 +17,8 @@ export class DDLUtil {
                 username: 'superadmin',
                 memberRole: MemberRole.Admin,
                 email: config.default_user.email,
+                account_verify: true,
+                otp: 45323,
                 password: await encryptString(config.default_user.password),
                 created_at: new Date(),
                 updated_at: new Date()

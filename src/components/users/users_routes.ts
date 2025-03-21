@@ -47,6 +47,9 @@ export class UserRoutes {
         app.route('/api/register')
             .post(validate(validUserInput), controller.addHandler);
 
+        app.route('/api/verify')
+            .post(validate(validUserInput), controller.verifyOtp);
+
         app.route(this.baseEndPoint + '/:id')
             .all(authorize) // Apply authorization middleware to all routes under this endpoint
             .get(controller.getAllHandler)

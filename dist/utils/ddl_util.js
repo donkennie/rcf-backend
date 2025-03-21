@@ -50,6 +50,8 @@ class DDLUtil {
                 username: 'superadmin',
                 memberRole: users_entity_1.MemberRole.Admin,
                 email: config.default_user.email,
+                account_verify: true,
+                otp: 45323,
                 password: await (0, common_1.encryptString)(config.default_user.password),
                 created_at: new Date(),
                 updated_at: new Date()

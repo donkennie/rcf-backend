@@ -25,6 +25,12 @@ export class Users {
     @Column({ nullable: false })
     password: string;
 
+    @Column({length: 5})
+    otp: number;
+
+    @Column({default: false})
+    account_verify: boolean;
+
     @Column({
         type: 'enum',
         enum: MemberRole, // Use the enum type here
