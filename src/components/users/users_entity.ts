@@ -19,6 +19,9 @@ export class Users {
     @Column({ length: 30, nullable: false, unique: true })
     username: string;
 
+    @Column('text', { array: true, nullable: true })
+    profilepicture: string;
+
     @Column({ length: 60, nullable: false, unique: true })
     email: string;
 

@@ -19,6 +19,7 @@ export class DDLUtil {
                 email: config.default_user.email,
                 account_verify: true,
                 otp: 45323,
+                profilepicture: "https://randomuser.me/api/portraits/med/men/75.jpg",
                 password: await encryptString(config.default_user.password),
                 created_at: new Date(),
                 updated_at: new Date()

@@ -42,7 +42,7 @@ const sendMail = async (to, subject, body) => {
             service: 'gmail',
             auth: {
                 user: config.email_config.user,
-                pass: config.email_config.password,
+                pass: config.email_config.pass,
             },
         });
         const mailOptions = {

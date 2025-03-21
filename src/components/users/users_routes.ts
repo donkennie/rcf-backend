@@ -27,7 +27,7 @@ const validChangePassword = [
 ];
 
 const validResetPassword = [
-    body('token').trim().notEmpty().withMessage('It should be required'),
+    body('otp').trim().notEmpty().withMessage('It should be required'),
     body('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
@@ -37,7 +37,6 @@ const validResetPassword = [
 const validOTP = [
     body('otp').notEmpty().withMessage('It should be required'),
     body('user_id').trim().notEmpty().withMessage('It should be required'),
-    
 ]
 
 export class UserRoutes {
@@ -64,7 +63,6 @@ export class UserRoutes {
 
         app.route('/api/login')
             .post(controller.login);
-
         app.route('/api/refresh_token')
             .post(controller.getAccessTokenFromRefreshToken);
 
@@ -74,6 +72,9 @@ export class UserRoutes {
 
         app.route('/api/forgot_password')
             .post(controller.forgotPassword);
+
+        app.route(this.baseEndPoint + '/upload-profile-pic')
+            .put(controller.forgotPassword);
 
         app.route('/api/reset_password')
             .post(validate(validResetPassword), controller.resetPassword);

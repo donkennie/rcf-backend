@@ -21,6 +21,7 @@ let Users = class Users {
     firstname;
     lastname;
     username;
+    profilepicture;
     email;
     password;
     otp;
@@ -46,6 +47,10 @@ __decorate([
     (0, typeorm_1.Column)({ length: 30, nullable: false, unique: true }),
     __metadata("design:type", String)
 ], Users.prototype, "username", void 0);
+__decorate([
+    (0, typeorm_1.Column)('text', { array: true, nullable: true }),
+    __metadata("design:type", String)
+], Users.prototype, "profilepicture", void 0);
 __decorate([
     (0, typeorm_1.Column)({ length: 60, nullable: false, unique: true }),
     __metadata("design:type", String)

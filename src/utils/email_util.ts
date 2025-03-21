@@ -8,7 +8,7 @@ export const sendMail = async (to: string, subject: string, body: string) => {
             service: 'gmail',
             auth: {
                 user: config.email_config.user, // Replace with your Gmail email
-                pass: config.email_config.password, // Replace with your app-specific password
+                pass: config.email_config.pass, // Replace with your app-specific password
             },
         });
         // Define email options

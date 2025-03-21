@@ -32,15 +32,18 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersUtil = exports.UserController = void 0;
 const base_controller_1 = require("../../utils/base_controller");
 const common_1 = require("../../utils/common");
 const users_service_1 = require("./users_service");
 const jwt = __importStar(require("jsonwebtoken"));
-const email_util_1 = require("../../utils/email_util");
-const config = __importStar(require("../../../server_config.json"));
 const cache_util_1 = require("../../utils/cache_util");
+const upload_image_1 = __importDefault(require("../../utils/upload-image"));
+const fs_1 = __importDefault(require("fs"));
 class UserController extends base_controller_1.BaseController {
     async addHandler(req, res) {
         try {
@@ -106,20 +109,50 @@ class UserController extends base_controller_1.BaseController {
         return;
     }
     async verifyOtp(req, res) {
-        const { userId, otp } = req.body;
-        console.log(userId + otp);
+        const { user_id, otp } = req.body;
         const service = new users_service_1.UsersService();
-        const user = await service.findOne(req.params.id);
+        const user = await service.findOne(user_id);
         if (user != null && user.data.otp == otp) {
             user.data.account_verify = true;
             user.data.updated_at = new Date();
-            await service.update(userId, user.data);
+            await service.update(user_id, user.data);
             res.status(200).json({ statusCode: 200, status: 'success', data: "Account verified🎉!" });
             return;
         }
         res.status(400).json({ statusCode: 400, status: 'error', data: "invalid OTP!" });
         return;
     }
+    async UploadPicture(req, res) {
+        try {
+            const service = new users_service_1.UsersService();
+            const user = await service.findOne(req.params.id);
+            if (!user) {
+                res.status(401).json({ success: false, message: 'Wrong Credentials' });
+                return;
+            }
+            if (!req.params.file) {
+                res.status(400).json({ success: false, message: 'No image provided' });
+                return;
+            }
+            const image = req.params.file;
+            const imageToBase64 = (filePath) => {
+                const bitmap = fs_1.default.readFileSync(filePath, { encoding: 'base64' });
+                return `data:image/jpeg;base64,${bitmap}`;
+            };
+            let fileData = imageToBase64(image);
+            const uploadPicture = await (0, upload_image_1.default)(fileData);
+            console.log(uploadPicture);
+            user.data.profilepicture = uploadPicture;
+            await service.update(user.data.user_id, user.data);
+            res.json({ success: true, message: 'Profile picture updated', profilePicture: uploadPicture });
+            return;
+        }
+        catch (error) {
+            res.status(501).json({ statusCode: 501, status: 'error', message: 'something went wrong try again' });
+            return;
+        }
+    }
+    ;
     async login(req, res) {
         const { email, password } = req.body;
         const service = new users_service_1.UsersService();
@@ -204,25 +237,23 @@ class UserController extends base_controller_1.BaseController {
             res.status(404).send({ statusCode: 404, status: 'error', message: 'User Not Found' });
             return;
         }
-        const resetToken = jwt.sign({ email: user.email }, common_1.SERVER_CONST.JWTSECRET, {
-            expiresIn: '1h',
-        });
-        const resetLink = `${config.front_app_url}/reset-password?token=${resetToken}`;
+        let otp = (0, common_1.generateOTP)();
+        user.otp = parseInt(otp);
         const mailOptions = {
             to: email,
             subject: 'Password Reset',
             html: ` Hello ${user.username},<p>We received a request to reset your password. If you didn't initiate this request, please ignore this email.</p>
            <p>To reset your password, please click the link below:</p>
-           <p><a href="${resetLink}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
+           <p><a href="${otp}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
            <p>If the link doesn't work, you can copy and paste the following URL into your browser:</p>
-           <p>${resetLink}</p>
+           <p>${otp}</p>
            <p>This link will expire in 1 hour for security reasons.</p>
            <p>If you didn't request a password reset, you can safely ignore this email.</p>
            <p>Best regards,<br>PMS Team</p>`,
         };
-        const emailStatus = await (0, email_util_1.sendMail)(mailOptions.to, mailOptions.subject, mailOptions.html);
-        if (emailStatus) {
-            res.status(200).json({ statusCode: 200, status: 'success', message: 'Reset Link sent on your mailId', data: { 'resetToken': resetToken } });
+        if (true) {
+            res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { 'otp': otp } });
+            return;
         }
         else {
             res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
@@ -230,27 +261,21 @@ class UserController extends base_controller_1.BaseController {
         return;
     }
     async resetPassword(req, res) {
-        const { newPassword, token } = req.body;
+        const { newPassword, otp } = req.body;
         const service = new users_service_1.UsersService();
         let email;
-        try {
-            const decoded = jwt.verify(token, common_1.SERVER_CONST.JWTSECRET);
-            if (!decoded) {
-                throw new Error('Invalid Reset Token');
-            }
-            email = decoded['email'];
-        }
-        catch (error) {
-            res.status(400).json({ statusCode: 400, status: 'error', message: 'Reset Token is invalid or expired' }).end();
-            return;
-        }
         try {
             const user = await UsersUtil.getUserByEmail(email);
             if (!user) {
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'User not found' }).end();
                 return;
             }
+            if (otp !== user.otp) {
+                res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
+                return;
+            }
             user.password = await (0, common_1.encryptString)(newPassword);
+            user.updated_at = new Date();
             const result = await service.update(user.user_id, user);
             if (result.statusCode === 200) {
                 res.status(200).json({ statusCode: 200, status: 'success', message: 'Password updated successfully' });

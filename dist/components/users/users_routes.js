@@ -25,7 +25,7 @@ const validChangePassword = [
         .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), (0, express_validator_1.body)('role_ids'),
 ];
 const validResetPassword = [
-    (0, express_validator_1.body)('token').trim().notEmpty().withMessage('It should be required'),
+    (0, express_validator_1.body)('otp').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
@@ -60,6 +60,8 @@ class UserRoutes {
             .post((0, validator_1.validate)(validChangePassword), controller.changePassword);
         app.route('/api/forgot_password')
             .post(controller.forgotPassword);
+        app.route(this.baseEndPoint + '/upload-profile-pic')
+            .put(controller.forgotPassword);
         app.route('/api/reset_password')
             .post((0, validator_1.validate)(validResetPassword), controller.resetPassword);
     }

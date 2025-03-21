@@ -9,9 +9,9 @@
         "dbname": "postgres"
     },
     "email_config": {
-        "from": "noreply@example.com",
-        "user": "donkennie",
-        "password": "password"
+        "from": "ajeigbekehinde@gmail.com",
+        "user": "ajeigbekehinde160@gmail.com",
+        "pass": "tdfnookzrazmwwml"
     },
     "front_app_url": "http://localhost:3000",
     "default_user": {

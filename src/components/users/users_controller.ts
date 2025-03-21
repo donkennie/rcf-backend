@@ -9,6 +9,8 @@ import { sendMail } from '../../utils/email_util';
 import { Users } from './users_entity';
 import * as config from '../../../server_config.json';
 import { CacheUtil } from '../../utils/cache_util';
+import uploadImage from '../../utils/upload-image';
+import fs from "fs";
 
 export class UserController extends BaseController {
 
@@ -144,7 +146,6 @@ export class UserController extends BaseController {
     public async verifyOtp(req: Request, res: Response): Promise<void> {
         const { user_id, otp } = req.body;
 
-        console.log(user_id + otp)
         const service = new UsersService();
 
         const user = await service.findOne(user_id);
@@ -161,6 +162,46 @@ export class UserController extends BaseController {
         res.status(400).json({ statusCode: 400, status: 'error', data: "invalid OTP!" });
         return;
     }
+
+    public async UploadPicture(req: Request, res: Response): Promise<void> {
+        try {
+          
+            const service = new UsersService();
+            const user = await service.findOne(req.params.id);
+    
+          if (!user) {
+            res.status(401).json({ success: false, message: 'Wrong Credentials' });
+            return;
+          }
+    
+            if (!req.params.file) {
+                res.status(400).json({ success: false, message: 'No image provided' });
+                return;
+              }
+      
+            const image = req.params.file;
+    
+            const imageToBase64 = (filePath: string) => {
+                // read binary data
+                const bitmap = fs.readFileSync(filePath, {encoding: 'base64'});
+                return `data:image/jpeg;base64,${bitmap}`
+            };
+            
+            let fileData = imageToBase64(image)
+            const uploadPicture = await uploadImage(fileData);
+            console.log(uploadPicture)
+            user.data.profilepicture = uploadPicture;
+      
+            await service.update(user.data.user_id, user.data);
+      
+            res.json({ success: true, message: 'Profile picture updated', profilePicture: uploadPicture });
+            return;
+    
+        } catch (error: any) {
+          res.status(501).json({ statusCode: 501, status: 'error', message: 'something went wrong try again' });
+          return;
+        }
+      };
 
 
     /**
@@ -287,27 +328,29 @@ export class UserController extends BaseController {
             return;
         }
         // Generate a reset token for the user
-        const resetToken: string = jwt.sign({ email: user.email }, SERVER_CONST.JWTSECRET, {
-            expiresIn: '1h',
-        });
-
+        // const resetToken: string = jwt.sign({ email: user.email }, SERVER_CONST.JWTSECRET, {
+        //     expiresIn: '1h',
+        // });
+        let otp = generateOTP()
+        user.otp = parseInt(otp);
         // Generate the reset link
-        const resetLink = `${config.front_app_url}/reset-password?token=${resetToken}`;
+        // const resetLink = `${config.front_app_url}/reset-password?token=${resetToken}`;
         const mailOptions = {
             to: email,
             subject: 'Password Reset',
             html: ` Hello ${user.username},<p>We received a request to reset your password. If you didn't initiate this request, please ignore this email.</p>
            <p>To reset your password, please click the link below:</p>
-           <p><a href="${resetLink}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
+           <p><a href="${otp}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
            <p>If the link doesn't work, you can copy and paste the following URL into your browser:</p>
-           <p>${resetLink}</p>
+           <p>${otp}</p>
            <p>This link will expire in 1 hour for security reasons.</p>
            <p>If you didn't request a password reset, you can safely ignore this email.</p>
            <p>Best regards,<br>PMS Team</p>`,
         };
-        const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
-        if (emailStatus) {
-            res.status(200).json({ statusCode: 200, status: 'success', message: 'Reset Link sent on your mailId', data: { 'resetToken': resetToken } });
+        // const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
+        if (true) {
+            res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { 'otp': otp } });
+            return;
         } else {
             res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
         }
@@ -316,20 +359,20 @@ export class UserController extends BaseController {
 
     public async resetPassword(req: Request, res: Response): Promise<void> {
 
-        const { newPassword, token } = req.body;
+        const { newPassword, otp } = req.body;
         const service = new UsersService();
         let email;
 
-        try {
-            const decoded = jwt.verify(token, SERVER_CONST.JWTSECRET);
-            if (!decoded) {
-                throw new Error('Invalid Reset Token');
-            }
-            email = decoded['email'];
-        } catch (error) {
-            res.status(400).json({ statusCode: 400, status: 'error', message: 'Reset Token is invalid or expired' }).end();
-            return;
-        }
+        // try {
+        //     const decoded = jwt.verify(otp, SERVER_CONST.JWTSECRET);
+        //     if (!decoded) {
+        //         throw new Error('Invalid Reset Token');
+        //     }
+        //     email = decoded['email'];
+        // } catch (error) {
+        //     res.status(400).json({ statusCode: 400, status: 'error', message: 'Reset Token is invalid or expired' }).end();
+        //     return;
+        // }
 
         try {
             const user = await UsersUtil.getUserByEmail(email);
@@ -338,8 +381,14 @@ export class UserController extends BaseController {
                 return;
             }
 
+            if(otp !== user.otp){
+                res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
+                return;
+            }
+
             // Encrypt the user's new password
             user.password = await encryptString(newPassword);
+            user.updated_at = new Date();
             const result = await service.update(user.user_id, user);
 
             if (result.statusCode === 200) {

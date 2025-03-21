@@ -12,7 +12,7 @@ export interface IServerConfig {
     email_config: {
         'from': string;
         'user': string;
-        'password': string;
+        'pass': string;
     };
 
     front_app_url: string;
