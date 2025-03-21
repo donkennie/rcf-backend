@@ -25,7 +25,7 @@ export class Users {
     @Column({ nullable: false })
     password: string;
 
-    @Column({length: 5})
+    @Column()
     otp: number;
 
     @Column({default: false})

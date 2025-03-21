@@ -4,14 +4,7 @@
   "main": "main.js",
   "scripts": {
     "test": "mocha --require ts-node/register src/**/*.spec.ts src/**/**/*.spec.ts",
-    "dev": "nodemon dist/src/main.js",
-    "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./typeOrm.config.ts",
-    "typeorm:generate-migration": "npm run typeorm -- -d ./typeOrm.config.ts migration:generate ./migrations/$npm_config_name",
-    "typeorm:create-migration": "npm run typeorm -- migration:create ./migrations/$npm_config_name",
-    "typeorm:revert-migration": "npm run typeorm -- -d ./typeorm.config.ts migration:revert",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
-    "migration:run": "npm run typeorm -- migration:revert -d ./src/data-source.ts",
-    "migration:create": "npm run typeorm -- migration:create"
+    "dev": "nodemon dist/src/main.js"
   },
   "author": "",
   "license": "ISC",

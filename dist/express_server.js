@@ -41,12 +41,14 @@ const express_1 = __importDefault(require("express"));
 const config = __importStar(require("../server_config.json"));
 const index_1 = require("./routes/index");
 const bodyParser = __importStar(require("body-parser"));
+const cors_1 = __importDefault(require("cors"));
 class ExpressServer {
     static server = null;
     server_config = config;
     constructor() {
         const port = this.server_config.port ?? 3000;
         const app = (0, express_1.default)();
+        app.use((0, cors_1.default)({ origin: true }));
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
         app.get('/ping', (req, res) => {

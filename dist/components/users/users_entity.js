@@ -55,7 +55,7 @@ __decorate([
     __metadata("design:type", String)
 ], Users.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 5 }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Users.prototype, "otp", void 0);
 __decorate([
