@@ -4,7 +4,14 @@
   "main": "main.js",
   "scripts": {
     "test": "mocha --require ts-node/register src/**/*.spec.ts src/**/**/*.spec.ts",
-    "dev": "nodemon dist/src/main.js"
+    "dev": "nodemon dist/src/main.js",
+    "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./typeOrm.config.ts",
+    "typeorm:generate-migration": "npm run typeorm -- -d ./typeOrm.config.ts migration:generate ./migrations/$npm_config_name",
+    "typeorm:create-migration": "npm run typeorm -- migration:create ./migrations/$npm_config_name",
+    "typeorm:revert-migration": "npm run typeorm -- -d ./typeorm.config.ts migration:revert",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "migration:run": "npm run typeorm -- migration:revert -d ./src/data-source.ts",
+    "migration:create": "npm run typeorm -- migration:create"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +19,7 @@
   "dependencies": {
     "@types/moment": "^2.11.29",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",

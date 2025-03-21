@@ -65,14 +65,17 @@ class DatabaseUtil {
                     username: db_config.username,
                     password: db_config.password,
                     database: db_config.dbname,
-                    synchronize: true,
-                    logging: false,
+                    synchronize: false,
+                    logging: true,
+                    migrations: ["./src/migrations/*.ts"],
                     poolSize: 5,
                     ssl: true,
                     extra: {
                         ssl: {
                             rejectUnauthorized: false
-                        }
+                        },
+                        migrationsTableName: '_migrations',
+                        migrationsRun: true,
                     }
                 });
                 await AppSource.initialize();

@@ -3,6 +3,7 @@ import { IServerConfig } from './utils/config';
 import * as config from '../server_config.json';
 import { Routes } from './routes/index';
 import * as bodyParser from 'body-parser';
+import cors from 'cors';
 
 export class ExpressServer {
     private static server = null;
@@ -13,6 +14,8 @@ export class ExpressServer {
         // initialize express app
         const app = express();
 
+        app.use(cors());
+
         app.use(bodyParser.urlencoded({ extended: false }));
 
         app.use(bodyParser.json());
@@ -20,6 +23,7 @@ export class ExpressServer {
         app.get('/ping', (req, res) => {
             res.send('pong');
         });
+        
 
         const routes = new Routes(app);
         if (routes) {
