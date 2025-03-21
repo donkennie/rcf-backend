@@ -63,15 +63,17 @@ class DatabaseUtil {
                 const db_config = this.server_config.db_config;
                 const AppSource = new typeorm_1.DataSource({
                     type: 'postgres',
-                    host: db_config.host,
-                    port: db_config.port,
-                    username: db_config.username,
-                    password: db_config.password,
-                    database: db_config.dbname,
+                    url: 'postgresql://postgres.uqbuhojmqwifboqoydly:Password@123@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
                     entities: [users_entity_1.Users, business_entity_1.Business, campaign_entity_1.Campaign],
                     synchronize: true,
                     logging: false,
-                    poolSize: 10
+                    poolSize: 5,
+                    ssl: true,
+                    extra: {
+                        ssl: {
+                            rejectUnauthorized: false
+                        }
+                    }
                 });
                 await AppSource.initialize();
                 DatabaseUtil.connection = AppSource;

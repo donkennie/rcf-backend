@@ -2,11 +2,12 @@
     "port": 3000,
     "db_config": {
         "db": "postgres",
-        "username": "postgres",
-        "password": "donkennie",
-        "host": "localhost",
+        "username": "postgres.uqbuhojmqwifboqoydly",
+        "password": "Password@123", 
+        "host": "aws-0-eu-west-1.pooler.supabase.com",
         "port": 5432,
-        "dbname": "rcf-backend"
+        "dbname": "postgres"
+        
     },
     "email_config": {
         "from": "noreply@example.com",

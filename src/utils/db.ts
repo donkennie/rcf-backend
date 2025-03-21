@@ -51,10 +51,15 @@ export class DatabaseUtil {
                     username: db_config.username,
                     password: db_config.password,
                     database: db_config.dbname,
-                    entities: [Users, Business, Campaign],
                     synchronize: true,
                     logging: false,
-                    poolSize: 10
+                    poolSize: 5,
+                    ssl: true,
+                    extra: {
+                    ssl: {
+                        rejectUnauthorized: false
+                    }
+                }
                 });
                 await AppSource.initialize();
                 DatabaseUtil.connection = AppSource;
