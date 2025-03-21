@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import { SERVER_CONST } from './common';
 import { UsersUtil } from '../components/users/users_controller';
 import { NextFunction, Request, Response } from 'express';
-import { Users } from '../components/users/users_entity';
+import { MemberRole, Users } from '../components/users/users_entity';
 
 export const authorize = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     // Get the access token from the request headers
@@ -33,8 +33,8 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
 };
 
 
-export const hasPermission = (rights: string[], desired_rights: string): boolean => {
-    if (rights?.includes(desired_rights)) {
+export const hasPermission = (memberRole: string): boolean => {
+    if (memberRole === MemberRole.Admin) {
         return true;
     } else {
         return false;

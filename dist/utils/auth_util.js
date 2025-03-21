@@ -37,6 +37,7 @@ exports.hasPermission = exports.authorize = void 0;
 const jwt = __importStar(require("jsonwebtoken"));
 const common_1 = require("./common");
 const users_controller_1 = require("../components/users/users_controller");
+const users_entity_1 = require("../components/users/users_entity");
 const authorize = async (req, res, next) => {
     const token = req.headers?.authorization ? req.headers?.authorization?.split('Bearer ')[1] : null;
     if (!token) {
@@ -59,8 +60,8 @@ const authorize = async (req, res, next) => {
     }
 };
 exports.authorize = authorize;
-const hasPermission = (rights, desired_rights) => {
-    if (rights?.includes(desired_rights)) {
+const hasPermission = (memberRole) => {
+    if (memberRole === users_entity_1.MemberRole.Admin) {
         return true;
     }
     else {

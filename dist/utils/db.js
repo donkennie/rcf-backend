@@ -36,9 +36,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseUtil = void 0;
 const typeorm_1 = require("typeorm");
 const config = __importStar(require("../../server_config.json"));
-const business_entity_1 = require("../components/business/business_entity");
-const users_entity_1 = require("../components/users/users_entity");
-const campaign_entity_1 = require("../components/campaign/campaign_entity");
 class DatabaseUtil {
     server_config = config;
     static connection = null;
@@ -63,8 +60,11 @@ class DatabaseUtil {
                 const db_config = this.server_config.db_config;
                 const AppSource = new typeorm_1.DataSource({
                     type: 'postgres',
-                    url: 'postgresql://postgres.uqbuhojmqwifboqoydly:Password@123@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
-                    entities: [users_entity_1.Users, business_entity_1.Business, campaign_entity_1.Campaign],
+                    host: db_config.host,
+                    port: db_config.port,
+                    username: db_config.username,
+                    password: db_config.password,
+                    database: db_config.dbname,
                     synchronize: true,
                     logging: false,
                     poolSize: 5,

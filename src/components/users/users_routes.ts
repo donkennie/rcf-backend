@@ -8,7 +8,6 @@ const validUserInput = [
     body('firstname').trim().notEmpty().withMessage('It should be required'),
     body('lastname').trim().notEmpty().withMessage('It should be required'),
     body('email').isEmail().withMessage('It should be valid emailId'),
-    body('memberrole').trim().notEmpty().withMessage('It should be required'),
     body('password')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })

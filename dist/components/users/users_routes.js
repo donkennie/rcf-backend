@@ -9,7 +9,6 @@ const validUserInput = [
     (0, express_validator_1.body)('firstname').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('lastname').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('email').isEmail().withMessage('It should be valid emailId'),
-    (0, express_validator_1.body)('memberrole').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('password')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
