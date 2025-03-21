@@ -106,24 +106,24 @@ export class DatabaseUtil {
 
 
 //Export DataSource directly for TypeORM CLI
-// const db_config = config.db_config;
+const db_config = config.db_config;
 
-// export const AppDataSource = new DataSource({
-//     type: 'postgres',
-//     host: db_config.host,
-//     port: db_config.port,
-//     username: db_config.username,
-//     password: db_config.password,
-//     database: db_config.dbname,
-//     synchronize: true,
-//     logging: true,
-//     migrations: ["./src/migrations/*.ts"],
-//     ssl: true,
-//     extra: {
-//         ssl: {
-//             rejectUnauthorized: false
-//         },
-//         migrationsTableName: '_migrations',
-//         migrationsRun: true,
-//     }
-// });
+export const AppDataSource = new DataSource({
+    type: 'postgres',
+    host: db_config.host,
+    port: db_config.port,
+    username: db_config.username,
+    password: db_config.password,
+    database: db_config.dbname,
+    synchronize: true,
+    logging: true,
+    migrations: ["./src/migrations/*.ts"],
+    ssl: true,
+    extra: {
+        ssl: {
+            rejectUnauthorized: false
+        },
+        migrationsTableName: '_migrations',
+        migrationsRun: true,
+    }
+});

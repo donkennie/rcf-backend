@@ -48,7 +48,7 @@ class ExpressServer {
     constructor() {
         const port = this.server_config.port ?? 3000;
         const app = (0, express_1.default)();
-        app.use((0, cors_1.default)({ origin: true }));
+        app.use((0, cors_1.default)({ origin: "*" }));
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
         app.get('/ping', (req, res) => {

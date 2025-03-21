@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DatabaseUtil = void 0;
+exports.AppDataSource = exports.DatabaseUtil = void 0;
 const typeorm_1 = require("typeorm");
 const config = __importStar(require("../../server_config.json"));
 const business_entity_1 = require("../components/business/business_entity");
@@ -107,3 +107,23 @@ class DatabaseUtil {
     }
 }
 exports.DatabaseUtil = DatabaseUtil;
+const db_config = config.db_config;
+exports.AppDataSource = new typeorm_1.DataSource({
+    type: 'postgres',
+    host: db_config.host,
+    port: db_config.port,
+    username: db_config.username,
+    password: db_config.password,
+    database: db_config.dbname,
+    synchronize: true,
+    logging: true,
+    migrations: ["./src/migrations/*.ts"],
+    ssl: true,
+    extra: {
+        ssl: {
+            rejectUnauthorized: false
+        },
+        migrationsTableName: '_migrations',
+        migrationsRun: true,
+    }
+});
