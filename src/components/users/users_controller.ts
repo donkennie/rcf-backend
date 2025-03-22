@@ -83,6 +83,7 @@ export class UserController extends BaseController {
         //     res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorised' });
         //     return;
         // }
+        console.log(req.params.user_id)
 
         // check user is in cache
         const userFromCache = await CacheUtil.get('User', req.params.id);
@@ -332,14 +333,14 @@ export class UserController extends BaseController {
             res.status(404).send({ statusCode: 404, status: 'error', message: 'User Not Found' });
             return;
         }
-        // Generate a reset token for the user
-        // const resetToken: string = jwt.sign({ email: user.email }, SERVER_CONST.JWTSECRET, {
-        //     expiresIn: '1h',
-        // });
+        //Generate a reset token for the user
+        const resetToken: string = jwt.sign({ email: user.email }, SERVER_CONST.JWTSECRET, {
+            expiresIn: '1h',
+        });
         let otp = generateOTP()
         user.otp = parseInt(otp);
         // Generate the reset link
-        // const resetLink = `${config.front_app_url}/reset-password?token=${resetToken}`;
+        const resetLink = `${config.front_app_url}/auth/reset-password?token=${resetToken}`;
         const mailOptions = {
             to: email,
             subject: 'Password Reset',
@@ -352,10 +353,10 @@ export class UserController extends BaseController {
            <p>If you didn't request a password reset, you can safely ignore this email.</p>
            <p>Best regards,<br>PMS Team</p>`,
         };
-        // const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
+        //const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
         if (true) {
-            res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { 'otp': otp } });
-            return;
+            res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { resetLink: resetLink, mailOptions: mailOptions} });
+            // return;
         } else {
             res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
         }
@@ -364,36 +365,36 @@ export class UserController extends BaseController {
 
     public async resetPassword(req: Request, res: Response): Promise<void> {
 
-        const { newPassword, otp, id } = req.body;
+        const { newPassword, token} = req.body;
         const service = new UsersService();
         let email;
 
-        // try {
-        //     const decoded = jwt.verify(otp, SERVER_CONST.JWTSECRET);
-        //     if (!decoded) {
-        //         throw new Error('Invalid Reset Token');
-        //     }
-        //     email = decoded['email'];
-        // } catch (error) {
-        //     res.status(400).json({ statusCode: 400, status: 'error', message: 'Reset Token is invalid or expired' }).end();
-        //     return;
-        // }
+        try {
+            const decoded = jwt.verify(token, SERVER_CONST.JWTSECRET);
+            if (!decoded) {
+                throw new Error('Invalid Reset Token');
+            }
+            email = decoded['email'];
+        } catch (error) {
+            res.status(400).json({ statusCode: 400, status: 'error', message: 'Reset Token is invalid or expired' }).end();
+            return;
+        }
 
         try {
-            const user = await UsersUtil.getUserById(id);
+            const user = await UsersUtil.getUserByEmail(email);
             if (!user) {
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'User not found' }).end();
                 return;
             }
 
-            console.log(otp)
-            console.log(user.otp)
+            // console.log(otp)
+            // console.log(user.otp)
 
 
-            if(otp != user.otp){
-                res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
-                return;
-            }
+            // if(otp != user.otp){
+            //     res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
+            //     return;
+            // }
 
             // Encrypt the user's new password
             user.password = await encryptString(newPassword);
