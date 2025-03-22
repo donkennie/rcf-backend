@@ -12,22 +12,16 @@ const validUserInput = [
     (0, express_validator_1.body)('email').isEmail().withMessage('It should be valid emailId'),
     (0, express_validator_1.body)('password')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
 ];
 const validChangePassword = [
     (0, express_validator_1.body)('oldPassword').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), (0, express_validator_1.body)('role_ids'),
 ];
 const validResetPassword = [
     (0, express_validator_1.body)('token').trim().notEmpty().withMessage('It should be required'),
     (0, express_validator_1.body)('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
 ];
 const validOTP = [
     (0, express_validator_1.body)('otp').notEmpty().withMessage('It should be required'),

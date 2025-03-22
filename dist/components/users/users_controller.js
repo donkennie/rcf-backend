@@ -80,7 +80,7 @@ class UserController extends base_controller_1.BaseController {
                 };
                 const emailStatus = await (0, email_util_1.sendMail)(mailOptions.to, mailOptions.subject, mailOptions.html);
                 if (emailStatus) {
-                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Please check your email and your SPAM(!) for the OTP', data: "Account created successfully🎉!" });
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Please check your email, especially your SPAM(!) for the OTP', data: "Account created successfully🎉!" });
                     return;
                 }
                 else {

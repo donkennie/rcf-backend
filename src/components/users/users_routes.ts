@@ -11,24 +11,24 @@ const validUserInput = [
     body('email').isEmail().withMessage('It should be valid emailId'),
     body('password')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
+        // .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
+        // .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
 ];
 
 const validChangePassword = [
     body('oldPassword').trim().notEmpty().withMessage('It should be required'),
     body('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), body('role_ids'),
+        // .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
+        // .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), body('role_ids'),
 ];
 
 const validResetPassword = [
     body('token').trim().notEmpty().withMessage('It should be required'),
     body('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
-        .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
+        // .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
+        // .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
     // body('id').trim().notEmpty().withMessage('It should be required')
     
 ];
