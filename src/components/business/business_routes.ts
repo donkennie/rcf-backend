@@ -2,7 +2,7 @@ import { Express } from 'express';
 
 import { BusinessController } from './business_controller';
 
-export class TaskRoutes {
+export class BusinessRoutes {
 
     private baseEndPoint = '/api/business';
 
@@ -18,7 +18,7 @@ export class TaskRoutes {
 
         app.route(this.baseEndPoint + '/:id')
 
-            .get(controller.getDetailsHandler)
+            .get(controller.getOneHandler)
 
             .put(controller.updateHandler)
 

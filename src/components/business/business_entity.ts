@@ -6,7 +6,14 @@ export enum Category {
     Technology = 'Technology',
     Entertainment = 'Entertainment',
     FoodsAndDrinks = 'Foods-Drinks',
-    Influencer = 'Influencer'
+    Influencing = 'Influencering',
+    Drinks = 'Drinks',
+    Sports = 'Sports'
+}
+
+export enum Type {
+    Branded = 'Branded',
+    NonBranded = 'Non-Branded'
 }
 
 @Entity()
@@ -20,7 +27,7 @@ export class Business {
     @Column({ length: 30, nullable: false, unique: false })
     location: string;
 
-    @Column({ length: 50, nullable: false, unique: false })
+    @Column({ length: 100, nullable: false, unique: false })
     summary: string;
 
     @Column({ length: 50, nullable: false, unique: false })
@@ -29,12 +36,18 @@ export class Business {
     @Column({ length: 500 })
     bio: string;
 
+    @Column({ length: 50 })
+    skill: string;
+
+    @Column({ length: 500 })
+    title: string;
+
     @Column()
     @ManyToOne(() => Users, (userData) => userData.user_id)
     @JoinColumn({ name: 'user_id' })
     user_id: string;
 
-    @Column('text', { array: true})
+    @Column('text', { array: true, nullable: false})
     logo: string;
 
     @Column({
@@ -44,7 +57,24 @@ export class Business {
     })
     category: Category;
 
-    @Column('text', { array: true, default: [] })
+    @Column({
+        type: 'enum',
+        enum: Type, // Use the enum type here
+        default: Type.Branded, // Set a default value as Low
+    })
+    type: Type;
+
+    @Column({ length: 20 , nullable: false})
+    number: string;
+
+    @Column({nullable: false})
+    email: string;
+
+    @Column({ length: 500 , nullable: false})
+    whatsapplink: string;
+
+
+    @Column('text', { array: true, default: [] , nullable: false})
     supported_files: string[];
 
     @CreateDateColumn()

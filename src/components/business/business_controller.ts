@@ -6,7 +6,7 @@ import { UsersUtil } from '../users/users_controller';
 // import { NotificationUtil } from '../../utils/notification_util';
 import { Business } from './business_entity';
 
-export class TaskController extends BaseController {
+export class BusinessController extends BaseController {
 
     /**
     * Handles the addition of a new user.

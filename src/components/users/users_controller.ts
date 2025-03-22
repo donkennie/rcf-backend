@@ -250,8 +250,9 @@ export class UserController extends BaseController {
                 username: user.username,
             }, SERVER_CONST.JWTSECRET, { expiresIn: SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
 
+            delete user?.password;
             // Respond with tokens
-            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, } });
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, user} });
             return;
         }
     }

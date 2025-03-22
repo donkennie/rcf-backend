@@ -183,7 +183,8 @@ class UserController extends base_controller_1.BaseController {
                 email: user.email,
                 username: user.username,
             }, common_1.SERVER_CONST.JWTSECRET, { expiresIn: common_1.SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
-            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, } });
+            delete user?.password;
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, user } });
             return;
         }
     }

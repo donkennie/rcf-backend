@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskUtil = exports.TaskController = void 0;
+exports.TaskUtil = exports.BusinessController = void 0;
 const base_controller_1 = require("../../utils/base_controller");
 const business_service_1 = require("./business_service");
 const users_controller_1 = require("../users/users_controller");
-class TaskController extends base_controller_1.BaseController {
+class BusinessController extends base_controller_1.BaseController {
     async addHandler(req, res) {
         try {
             const service = new business_service_1.BusinessService();
@@ -46,7 +46,7 @@ class TaskController extends base_controller_1.BaseController {
         res.status(result.statusCode).json(result);
     }
 }
-exports.TaskController = TaskController;
+exports.BusinessController = BusinessController;
 class TaskUtil {
     static async notifyUsers(project, task, action) {
         if (project) {

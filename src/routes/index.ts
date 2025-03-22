@@ -1,6 +1,6 @@
 import { Express, Router } from 'express';
 import { UserRoutes } from '../components/users/users_routes';
-// import { BusinessRoutes } from '../components/business/business_routes';
+import { BusinessRoutes } from '../components/business/business_routes';
 // import { CampaignRoutes } from '../components/campaign/campaign_routes';
 
 export class Routes {
@@ -9,7 +9,7 @@ export class Routes {
     constructor(app: Express) {
         const routeClasses = [
             UserRoutes,
-            // BusinessRoutes,
+            BusinessRoutes,
             // CampaignRoutes
         ];
 
