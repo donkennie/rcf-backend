@@ -62,7 +62,7 @@ export class UserController extends BaseController {
             // If role_ids are valid, create the user
             const createdUser = await service.create(user);
             console.log(createdUser.statusCode)
-
+            let userData = createdUser.data
             if(createdUser.statusCode == 201){
                 const mailOptions = {
                     to: user.email,
@@ -78,7 +78,7 @@ export class UserController extends BaseController {
                 };
                 const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
                 if (emailStatus) {
-                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉🎉!', data:{createdUser} });
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉🎉!', data:{userData} });
                     return;
                 } else {
                     res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });

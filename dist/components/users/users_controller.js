@@ -66,6 +66,7 @@ class UserController extends base_controller_1.BaseController {
             user.account_verify = false;
             const createdUser = await service.create(user);
             console.log(createdUser.statusCode);
+            let userData = createdUser.data;
             if (createdUser.statusCode == 201) {
                 const mailOptions = {
                     to: user.email,
@@ -81,7 +82,7 @@ class UserController extends base_controller_1.BaseController {
                 };
                 const emailStatus = await (0, email_util_1.sendMail)(mailOptions.to, mailOptions.subject, mailOptions.html);
                 if (emailStatus) {
-                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉🎉!', data: { createdUser } });
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉🎉!', data: { userData } });
                     return;
                 }
                 else {
