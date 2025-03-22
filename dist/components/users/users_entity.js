@@ -48,7 +48,7 @@ __decorate([
     __metadata("design:type", String)
 ], Users.prototype, "username", void 0);
 __decorate([
-    (0, typeorm_1.Column)('text', { array: true, nullable: true }),
+    (0, typeorm_1.Column)('text', { nullable: true }),
     __metadata("design:type", String)
 ], Users.prototype, "profilepicture", void 0);
 __decorate([

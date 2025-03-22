@@ -32,7 +32,7 @@ export class Campaign {
     @JoinColumn({ name: 'user_id' })
     user_id: string;
 
-    @Column('text', { array: true})
+    @Column('text', {nullable: false,})
     banner: string;
 
     @Column({

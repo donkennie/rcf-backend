@@ -47,7 +47,7 @@ export class Business {
     @JoinColumn({ name: 'user_id' })
     user_id: string;
 
-    @Column('text', { array: true, nullable: false})
+    @Column('text', { nullable: false})
     logo: string;
 
     @Column({

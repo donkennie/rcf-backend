@@ -87,7 +87,7 @@ __decorate([
     __metadata("design:type", String)
 ], Business.prototype, "user_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)('text', { array: true, nullable: false }),
+    (0, typeorm_1.Column)('text', { nullable: false }),
     __metadata("design:type", String)
 ], Business.prototype, "logo", void 0);
 __decorate([
