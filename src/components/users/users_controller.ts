@@ -52,7 +52,7 @@ export class UserController extends BaseController {
 
             // If role_ids are valid, create the user
             const createdUser = await service.create(user);
-            res.status(createdUser.statusCode).json(createdUser);
+            res.status(createdUser.statusCode).json("Account created successfully!🎉. Please verify!");
 
         } catch (error) {
             // Handle errors and send an appropriate response
@@ -71,7 +71,7 @@ export class UserController extends BaseController {
         const result = await service.findAll(req.query);
         if (result.statusCode === 200) {
             // Remove password field to send in response
-            result.data.forEach(i => delete i.password);
+            result.data.forEach(i => delete i.password && i.otp);
         }
         res.status(result.statusCode).json(result);
         return;
@@ -95,6 +95,7 @@ export class UserController extends BaseController {
             const result = await service.findOne(req.params.id);
             if (result.statusCode === 200) {
                 delete result.data.password;
+                delete result.data.otp;
                 // set user in cache
                 CacheUtil.set('User', req.params.id, result.data);
             }
@@ -124,7 +125,7 @@ export class UserController extends BaseController {
         if (result.statusCode === 200) {
             delete result.data.password;
         }
-        res.status(result.statusCode).json(result);
+        res.status(result.statusCode).json("Updated successfully!🎉");
         return;
     }
 
@@ -139,7 +140,7 @@ export class UserController extends BaseController {
         // remove user from cache
         CacheUtil.remove('User', req.params.id);
 
-        res.status(result.statusCode).json(result);
+        res.status(result.statusCode).json("Account deleted successfully!");
         return;
     }
 
@@ -166,8 +167,11 @@ export class UserController extends BaseController {
     public async UploadPicture(req: Request, res: Response): Promise<void> {
         try {
           
+            console.log(req)
+
             const service = new UsersService();
             const user = await service.findOne(req.params.id);
+            console.log(req.params.id)
     
           if (!user) {
             res.status(401).json({ success: false, message: 'Wrong Credentials' });
@@ -247,7 +251,7 @@ export class UserController extends BaseController {
             }, SERVER_CONST.JWTSECRET, { expiresIn: SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
 
             // Respond with tokens
-            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken } });
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, } });
             return;
         }
     }
@@ -359,7 +363,7 @@ export class UserController extends BaseController {
 
     public async resetPassword(req: Request, res: Response): Promise<void> {
 
-        const { newPassword, otp } = req.body;
+        const { newPassword, otp, id } = req.body;
         const service = new UsersService();
         let email;
 
@@ -375,13 +379,17 @@ export class UserController extends BaseController {
         // }
 
         try {
-            const user = await UsersUtil.getUserByEmail(email);
+            const user = await UsersUtil.getUserById(id);
             if (!user) {
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'User not found' }).end();
                 return;
             }
 
-            if(otp !== user.otp){
+            console.log(otp)
+            console.log(user.otp)
+
+
+            if(otp != user.otp){
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
                 return;
             }

@@ -15,7 +15,7 @@ const validUserInput = [
         .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
 ];
 const updateValidUserInput = [
-    (0, express_validator_1.body)('role_id').isUUID().withMessage('It must be uuid of role')
+    (0, express_validator_1.body)('id').isUUID().withMessage('It must be uuid of role')
 ];
 const validChangePassword = [
     (0, express_validator_1.body)('oldPassword').trim().notEmpty().withMessage('It should be required'),
@@ -29,7 +29,8 @@ const validResetPassword = [
     (0, express_validator_1.body)('newPassword')
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
-        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'), (0, express_validator_1.body)('role_ids'),
+        .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
+    (0, express_validator_1.body)('id').trim().notEmpty().withMessage('It should be required')
 ];
 const validOTP = [
     (0, express_validator_1.body)('otp').notEmpty().withMessage('It should be required'),
@@ -61,7 +62,7 @@ class UserRoutes {
         app.route('/api/forgot_password')
             .post(controller.forgotPassword);
         app.route(this.baseEndPoint + '/upload-profile-pic')
-            .put(controller.forgotPassword);
+            .put(controller.UploadPicture);
         app.route('/api/reset_password')
             .post((0, validator_1.validate)(validResetPassword), controller.resetPassword);
     }

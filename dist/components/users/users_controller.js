@@ -55,7 +55,7 @@ class UserController extends base_controller_1.BaseController {
             user.otp = (0, common_1.generateOTP)();
             user.account_verify = false;
             const createdUser = await service.create(user);
-            res.status(createdUser.statusCode).json(createdUser);
+            res.status(createdUser.statusCode).json("Account created successfully!🎉. Please verify!");
         }
         catch (error) {
             console.error(`Error while addUser => ${error.message}`);
@@ -66,7 +66,7 @@ class UserController extends base_controller_1.BaseController {
         const service = new users_service_1.UsersService();
         const result = await service.findAll(req.query);
         if (result.statusCode === 200) {
-            result.data.forEach(i => delete i.password);
+            result.data.forEach(i => delete i.password && i.otp);
         }
         res.status(result.statusCode).json(result);
         return;
@@ -82,6 +82,7 @@ class UserController extends base_controller_1.BaseController {
             const result = await service.findOne(req.params.id);
             if (result.statusCode === 200) {
                 delete result.data.password;
+                delete result.data.otp;
                 cache_util_1.CacheUtil.set('User', req.params.id, result.data);
             }
             res.status(result.statusCode).json(result);
@@ -98,14 +99,14 @@ class UserController extends base_controller_1.BaseController {
         if (result.statusCode === 200) {
             delete result.data.password;
         }
-        res.status(result.statusCode).json(result);
+        res.status(result.statusCode).json("Updated successfully!🎉");
         return;
     }
     async deleteHandler(req, res) {
         const service = new users_service_1.UsersService();
         const result = await service.delete(req.params.id);
         cache_util_1.CacheUtil.remove('User', req.params.id);
-        res.status(result.statusCode).json(result);
+        res.status(result.statusCode).json("Account deleted successfully!");
         return;
     }
     async verifyOtp(req, res) {
@@ -124,8 +125,10 @@ class UserController extends base_controller_1.BaseController {
     }
     async UploadPicture(req, res) {
         try {
+            console.log(req);
             const service = new users_service_1.UsersService();
             const user = await service.findOne(req.params.id);
+            console.log(req.params.id);
             if (!user) {
                 res.status(401).json({ success: false, message: 'Wrong Credentials' });
                 return;
@@ -180,7 +183,7 @@ class UserController extends base_controller_1.BaseController {
                 email: user.email,
                 username: user.username,
             }, common_1.SERVER_CONST.JWTSECRET, { expiresIn: common_1.SERVER_CONST.REFRESH_TOKEN_EXPIRY_TIME_SECONDS });
-            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken } });
+            res.status(200).json({ statusCode: 200, status: 'success 🎉', data: { accessToken, refreshToken, } });
             return;
         }
     }
@@ -261,16 +264,18 @@ class UserController extends base_controller_1.BaseController {
         return;
     }
     async resetPassword(req, res) {
-        const { newPassword, otp } = req.body;
+        const { newPassword, otp, id } = req.body;
         const service = new users_service_1.UsersService();
         let email;
         try {
-            const user = await UsersUtil.getUserByEmail(email);
+            const user = await UsersUtil.getUserById(id);
             if (!user) {
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'User not found' }).end();
                 return;
             }
-            if (otp !== user.otp) {
+            console.log(otp);
+            console.log(user.otp);
+            if (otp != user.otp) {
                 res.status(404).json({ statusCode: 404, status: 'error', message: 'Invalid OTP!' }).end();
                 return;
             }
