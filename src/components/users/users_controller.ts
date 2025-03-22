@@ -61,8 +61,9 @@ export class UserController extends BaseController {
 
             // If role_ids are valid, create the user
             const createdUser = await service.create(user);
+            console.log(createdUser.statusCode)
 
-            if(createdUser.statusCode === 200){
+            if(createdUser.statusCode == 201){
                 const mailOptions = {
                     to: user.email,
                     subject: `<b>Verify Your Account</b>`,
@@ -76,10 +77,11 @@ export class UserController extends BaseController {
                 };
                 const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
                 if (emailStatus) {
-                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Please check your email for the OTP', data: "Account created successfully🎉!"});
-                    // return;
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Please check your email and your SPAM(!) for the OTP', data: "Account created successfully🎉!"});
+                    return;
                 } else {
                     res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
+                    return;
                 }
             }
             // const resetLink = `${config.front_app_url}/auth/reset-password?token=${resetToken}`
@@ -380,14 +382,14 @@ export class UserController extends BaseController {
            <p>To reset your password, please click the link below:</p>
            <p><a href="${resetLink}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
            <p>If the link doesn't work, you can copy and paste the following URL into your browser:</p>
-           <p>${resetLink}</p>
+
            <p>This link will expire in 1 hour for security reasons.</p>
            <p>If you didn't request a password reset, you can safely ignore this email.</p>
            <p>Best regards,<br>RCF Funnab Team</p>`,
         };
         const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
         if (emailStatus) {
-            res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { resetLink: resetLink, mailOptions: mailOptions} });
+            res.status(200).json({ statusCode: 200, status: 'success', data: { 'resetToken': resetToken } });
             // return;
         } else {
             res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
