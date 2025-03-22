@@ -9,7 +9,8 @@ class BusinessController extends base_controller_1.BaseController {
         try {
             const service = new business_service_1.BusinessService();
             const business = req.body;
-            const isValidUser = await users_controller_1.UsersUtil.checkValidUserIds([business.user_id]);
+            console.log(business);
+            const isValidUser = await users_controller_1.UsersUtil.getUserById(business.user_id);
             if (!isValidUser) {
                 res.status(400).json({ statusCode: 400, status: 'error', message: 'Invalid user_id' });
                 return;

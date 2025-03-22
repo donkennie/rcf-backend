@@ -26,6 +26,7 @@ export class BusinessController extends BaseController {
             // Extract task data from the request body
             const business = req.body;
 
+            console.log(business)
 
             // Get the project
             // const project = await ProjectsUtil.getProjectByProjectId(task.project_id);
@@ -40,7 +41,7 @@ export class BusinessController extends BaseController {
             // }
 
             // Check if the provided user_id is valid
-            const isValidUser = await UsersUtil.checkValidUserIds([business.user_id]);
+            const isValidUser = await UsersUtil.getUserById(business.user_id);
 
             if (!isValidUser) {
                 // If user_ids are invalid, send an error response

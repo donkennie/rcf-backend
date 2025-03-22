@@ -39,9 +39,6 @@ export class Business {
     @Column({ length: 50 })
     skill: string;
 
-    @Column({ length: 500 })
-    title: string;
-
     @Column()
     @ManyToOne(() => Users, (userData) => userData.user_id)
     @JoinColumn({ name: 'user_id' })
@@ -65,7 +62,7 @@ export class Business {
     type: Type;
 
     @Column({ length: 20 , nullable: false})
-    number: string;
+    contact: string;
 
     @Column({nullable: false})
     email: string;

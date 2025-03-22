@@ -35,12 +35,11 @@ let Business = class Business {
     BusinessContact;
     bio;
     skill;
-    title;
     user_id;
     logo;
     category;
     type;
-    number;
+    contact;
     email;
     whatsapplink;
     supported_files;
@@ -77,10 +76,6 @@ __decorate([
     __metadata("design:type", String)
 ], Business.prototype, "skill", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 500 }),
-    __metadata("design:type", String)
-], Business.prototype, "title", void 0);
-__decorate([
     (0, typeorm_1.Column)(),
     (0, typeorm_1.ManyToOne)(() => users_entity_1.Users, (userData) => userData.user_id),
     (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
@@ -109,7 +104,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ length: 20, nullable: false }),
     __metadata("design:type", String)
-], Business.prototype, "number", void 0);
+], Business.prototype, "contact", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
