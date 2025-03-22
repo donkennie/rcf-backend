@@ -72,7 +72,8 @@ class UserController extends base_controller_1.BaseController {
                     subject: `Verify Your Account`,
                     html: ` Hello ${user.username},<p>We received a request to verify your account. If you didn't initiate this request, please ignore this email.</p>
                    <p>To verify your account, please use the OTP below:</p>
-    
+
+                     <p><a href="https://www.rcffunaab.com/auth/verify-account" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Verify Account</a></p>
                    <p>${user.otp}</p>
                    
                    <p>If you didn't request to verify your account, you can safely ignore this email.</p>
@@ -144,9 +145,10 @@ class UserController extends base_controller_1.BaseController {
     }
     async verifyOtp(req, res) {
         const { user_id, otp } = req.body;
+        console.log(otp);
         const service = new users_service_1.UsersService();
         const user = await service.findOne(user_id);
-        if (user != null && user.data.otp == otp) {
+        if (user != null && user.data.otp === otp) {
             user.data.account_verify = true;
             user.data.updated_at = new Date();
             await service.update(user_id, user.data);
