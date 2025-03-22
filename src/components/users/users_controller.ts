@@ -66,8 +66,8 @@ export class UserController extends BaseController {
             if(createdUser.statusCode == 201){
                 const mailOptions = {
                     to: user.email,
-                    subject: `<b>Verify Your Account</b>`,
-                    html: ` Hello ${user.username},<p>We received a request to reset your password. If you didn't initiate this request, please ignore this email.</p>
+                    subject: `Verify Your Account`,
+                    html: ` Hello ${user.username},<p>We received a request to verify your account. If you didn't initiate this request, please ignore this email.</p>
                    <p>To verify your account, please use the OTP below:</p>
     
                    <p>${user.otp}</p>
