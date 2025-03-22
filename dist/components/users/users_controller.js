@@ -81,7 +81,7 @@ class UserController extends base_controller_1.BaseController {
                 };
                 const emailStatus = await (0, email_util_1.sendMail)(mailOptions.to, mailOptions.subject, mailOptions.html);
                 if (emailStatus) {
-                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉!', data: { user: userNamecheck } });
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Account created successfully🎉!', data: { user: createdUser } });
                     return;
                 }
                 else {
