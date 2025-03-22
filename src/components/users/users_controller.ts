@@ -45,6 +45,15 @@ export class UserController extends BaseController {
             user.email = user.email?.toLowerCase();
             user.username = user.username?.toLowerCase();
 
+            const userNamecheck = await UsersUtil.getUserFromUsername(user.username)
+            if(userNamecheck != null){
+                res.status(400).json({ statusCode: 400, status: 'error', message: 'Username is already being used!😒' });
+            }
+
+            const emailCheck = await UsersUtil.getUserByEmail(user.email)
+            if(emailCheck != null){
+                res.status(400).json({ statusCode: 400, status: 'error', message: 'Email is already being used!😒' });
+            }
             // Encrypt the user's password
             user.password = await encryptString(user.password);
             user.otp = generateOTP();
@@ -52,7 +61,30 @@ export class UserController extends BaseController {
 
             // If role_ids are valid, create the user
             const createdUser = await service.create(user);
-            res.status(createdUser.statusCode).json("Account created successfully!🎉. Please verify!");
+
+            if(createdUser.statusCode === 200){
+                const mailOptions = {
+                    to: user.email,
+                    subject: `<b>Verify Your Account</b>`,
+                    html: ` Hello ${user.username},<p>We received a request to reset your password. If you didn't initiate this request, please ignore this email.</p>
+                   <p>To verify your account, please use the OTP below:</p>
+    
+                   <p>${user.otp}</p>
+                   
+                   <p>If you didn't request to verify your account, you can safely ignore this email.</p>
+                   <p>Best regards,<br>RCF Funnab Team</p>`,
+                };
+                const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
+                if (emailStatus) {
+                    res.status(200).json({ statusCode: 200, status: 'success', message: 'Please check your email for the OTP', data: "Account created successfully🎉!"});
+                    // return;
+                } else {
+                    res.status(400).json({ statusCode: 400, status: 'error', message: 'something went wrong try again' });
+                }
+            }
+            // const resetLink = `${config.front_app_url}/auth/reset-password?token=${resetToken}`
+
+            // res.status(createdUser.statusCode).json("Account created successfully!🎉. Please verify!");
 
         } catch (error) {
             // Handle errors and send an appropriate response
@@ -337,8 +369,8 @@ export class UserController extends BaseController {
         const resetToken: string = jwt.sign({ email: user.email }, SERVER_CONST.JWTSECRET, {
             expiresIn: '1h',
         });
-        let otp = generateOTP()
-        user.otp = parseInt(otp);
+        // let otp = generateOTP()
+        // user.otp = parseInt(otp);
         // Generate the reset link
         const resetLink = `${config.front_app_url}/auth/reset-password?token=${resetToken}`;
         const mailOptions = {
@@ -346,15 +378,15 @@ export class UserController extends BaseController {
             subject: 'Password Reset',
             html: ` Hello ${user.username},<p>We received a request to reset your password. If you didn't initiate this request, please ignore this email.</p>
            <p>To reset your password, please click the link below:</p>
-           <p><a href="${otp}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
+           <p><a href="${resetLink}" style="background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a></p>
            <p>If the link doesn't work, you can copy and paste the following URL into your browser:</p>
-           <p>${otp}</p>
+           <p>${resetLink}</p>
            <p>This link will expire in 1 hour for security reasons.</p>
            <p>If you didn't request a password reset, you can safely ignore this email.</p>
-           <p>Best regards,<br>PMS Team</p>`,
+           <p>Best regards,<br>RCF Funnab Team</p>`,
         };
-        //const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
-        if (true) {
+        const emailStatus = await sendMail(mailOptions.to, mailOptions.subject, mailOptions.html);
+        if (emailStatus) {
             res.status(200).json({ statusCode: 200, status: 'success', message: 'This is the otp', data: { resetLink: resetLink, mailOptions: mailOptions} });
             // return;
         } else {

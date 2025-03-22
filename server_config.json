@@ -9,11 +9,11 @@
         "dbname": "postgres"
     },
     "email_config": {
-        "from": "ajeigbekehinde@gmail.com",
+        "from": "rcffunnab24@gmail.com",
         "user": "ajeigbekehinde160@gmail.com",
         "pass": "tdfnookzrazmwwml"
     },
-    "front_app_url": "http://localhost:3000",
+    "front_app_url": "",
     "default_user": {
         "email": "ajeigbekehinde160@gmail.com",
         "password": "Password@123"
