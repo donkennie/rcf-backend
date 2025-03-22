@@ -4,6 +4,7 @@ exports.UserRoutes = void 0;
 const users_controller_1 = require("./users_controller");
 const express_validator_1 = require("express-validator");
 const validator_1 = require("../../utils/validator");
+const upload_image_1 = require("../../utils/upload-image");
 const auth_util_1 = require("../../utils/auth_util");
 const validUserInput = [
     (0, express_validator_1.body)('firstname').trim().notEmpty().withMessage('It should be required'),
@@ -13,9 +14,6 @@ const validUserInput = [
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
         .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
-];
-const updateValidUserInput = [
-    (0, express_validator_1.body)('id').isUUID().withMessage('It must be uuid of role')
 ];
 const validChangePassword = [
     (0, express_validator_1.body)('oldPassword').trim().notEmpty().withMessage('It should be required'),
@@ -50,7 +48,7 @@ class UserRoutes {
         app.route(this.baseEndPoint + '/:id')
             .all(auth_util_1.authorize)
             .get(controller.getAllHandler)
-            .put((0, validator_1.validate)(updateValidUserInput), controller.updateHandler)
+            .put(controller.updateHandler)
             .delete(controller.deleteHandler);
         app.route('/api/login')
             .post(controller.login);
@@ -62,7 +60,7 @@ class UserRoutes {
         app.route('/api/forgot_password')
             .post(controller.forgotPassword);
         app.route(this.baseEndPoint + '/upload-profile-pic')
-            .put(controller.UploadPicture);
+            .put(upload_image_1.upload.single("file"), controller.UploadPicture);
         app.route('/api/reset_password')
             .post((0, validator_1.validate)(validResetPassword), controller.resetPassword);
     }

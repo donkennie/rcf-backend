@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { UserController } from './users_controller';
 import { body } from 'express-validator';
 import { validate } from '../../utils/validator';
+import uploadImage, { upload } from '../../utils/upload-image';
 import { authorize } from '../../utils/auth_util';
 
 const validUserInput = [
@@ -12,10 +13,6 @@ const validUserInput = [
         .isLength({ min: 6, max: 12 }).withMessage('It must be between 6 and 12 characters in length')
         .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
         .withMessage('It should include at least one uppercase letter, one lowercase letter, one special symbol, and one numerical digit.'),
-];
-
-const updateValidUserInput = [
-    body('id').isUUID().withMessage('It must be uuid of role')
 ];
 
 const validChangePassword = [
@@ -60,7 +57,7 @@ export class UserRoutes {
         app.route(this.baseEndPoint + '/:id')
             .all(authorize) // Apply authorization middleware to all routes under this endpoint
             .get(controller.getAllHandler)
-            .put(validate(updateValidUserInput), controller.updateHandler)
+            .put(controller.updateHandler)
             .delete(controller.deleteHandler);
 
         app.route('/api/login')
@@ -76,7 +73,7 @@ export class UserRoutes {
             .post(controller.forgotPassword);
 
         app.route(this.baseEndPoint + '/upload-profile-pic')
-            .put(controller.UploadPicture);
+            .put(upload.single("file"), controller.UploadPicture);
 
         app.route('/api/reset_password')
             .post(validate(validResetPassword), controller.resetPassword);
